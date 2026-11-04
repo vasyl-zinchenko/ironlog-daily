@@ -57,8 +57,8 @@ function getStrokeColor(id: MuscleId): string {
           aria-label="Анатомічна карта спереду"
         >
           <!-- Body Outline Base / Head / Neck -->
-          <circle cx="80" cy="24" r="14" fill="#F0F7FD" stroke="#BAE6FD" stroke-width="1.5" />
-          <path d="M74,38 L74,48 L86,48 L86,38 Z" fill="#F0F7FD" stroke="#BAE6FD" stroke-width="1.5" />
+          <circle cx="80" cy="24" r="14" fill="var(--muscle-neutral-fill)" stroke="var(--muscle-neutral-stroke)" stroke-width="1.5" />
+          <path d="M74,38 L74,48 L86,48 L86,38 Z" fill="var(--muscle-neutral-fill)" stroke="var(--muscle-neutral-stroke)" stroke-width="1.5" />
 
           <!-- Shoulders (Front Delts) -->
           <path
@@ -164,8 +164,8 @@ function getStrokeColor(id: MuscleId): string {
           aria-label="Анатомічна карта ззаду"
         >
           <!-- Head / Neck back -->
-          <circle cx="80" cy="24" r="14" fill="#F0F7FD" stroke="#BAE6FD" stroke-width="1.5" />
-          <path d="M74,38 L74,48 L86,48 L86,38 Z" fill="#F0F7FD" stroke="#BAE6FD" stroke-width="1.5" />
+          <circle cx="80" cy="24" r="14" fill="var(--muscle-neutral-fill)" stroke="var(--muscle-neutral-stroke)" stroke-width="1.5" />
+          <path d="M74,38 L74,48 L86,48 L86,38 Z" fill="var(--muscle-neutral-fill)" stroke="var(--muscle-neutral-stroke)" stroke-width="1.5" />
 
           <!-- Upper Back & Traps (Трапеція) -->
           <path
@@ -420,4 +420,3 @@ function getStrokeColor(id: MuscleId): string {
   border-radius: 50%;
 }
 </style>
-

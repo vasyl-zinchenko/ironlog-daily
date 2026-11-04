@@ -1,4 +1,4 @@
-/* IRONLOG DAILY — White & Blue Edition (Світла палітра від білого до блакитного) */
+/* IRONLOG DAILY — Calm light and dark themes */
 
 :root {
   /* System Font Stack */
@@ -41,6 +41,20 @@
   --border-light: #E2E8F0;
   --border-blue: #BAE6FD;
   --border-focus: #0284C7;
+  --app-surface: #FFFFFF;
+  --stage-surface: linear-gradient(180deg, #FFFFFF 0%, #F5F9FE 30%, #ECF5FC 100%);
+  --text-strong: #0F172A;
+  --accent: #0284C7;
+  --accent-text: #0369A1;
+  --accent-soft: #38BDF8;
+  --accent-surface: #E0F2FE;
+  --border-accent: #BAE6FD;
+  --border-subtle: #E2E8F0;
+  --muscle-neutral-fill: #F0F7FD;
+  --muscle-neutral-stroke: #BAE6FD;
+  --completed-surface: #EDF7EF;
+  --completed-surface-hover: #E5F2E8;
+  --completed-border: #8CBF98;
 
   /* Тіні */
   --shadow-sm: 0 2px 8px rgba(2, 132, 199, 0.05);
@@ -62,7 +76,7 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background-color: var(--blue-50);
+  background-color: var(--app-surface);
   color: var(--text-primary);
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
@@ -72,7 +86,7 @@ html, body {
 body {
   display: flex;
   justify-content: center;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F0F7FD 30%, #E2F0FC 70%, #D4E8FA 100%);
+  background: var(--stage-surface);
   background-attachment: fixed;
   background-size: cover;
 }
@@ -81,7 +95,7 @@ body {
   width: 100%;
   max-width: 580px;
   min-height: 100vh;
-  background: #FFFFFF;
+  background: var(--app-surface);
   border-left: 1px solid var(--border-light);
   border-right: 1px solid var(--border-light);
   display: flex;
@@ -104,4 +118,348 @@ button {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(4px);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --blue-50: #171F27;
+  --blue-100: #202B35;
+  --blue-150: #283642;
+  --blue-200: #364957;
+  --blue-300: #527187;
+  --blue-400: #78A9C3;
+  --blue-500: #8CBBD2;
+  --blue-600: #85B9D2;
+  --blue-700: #A7D1E4;
+  --blue-800: #C4E0EC;
+  --blue-900: #D7EAF1;
+  --blue-950: #E6F2F6;
+  --bg-app: #151C23;
+  --bg-stage: #10171E;
+  --card-bg: #1B252E;
+  --card-hover: #222F39;
+  --text-primary: #E7EDF2;
+  --text-secondary: #C1CCD5;
+  --text-muted: #9BAAB6;
+  --text-light: #80919E;
+  --border-light: #2C3A45;
+  --border-blue: #3A5261;
+  --border-focus: #85B9D2;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.28);
+  --shadow-btn: 0 6px 20px rgba(80, 148, 181, 0.2);
+  --app-surface: #151C23;
+  --stage-surface: linear-gradient(180deg, #151C23 0%, #121A21 55%, #10171E 100%);
+  --text-strong: #E7EDF2;
+  --accent: #91C5DC;
+  --accent-text: #B2D7E6;
+  --accent-soft: #80B4CC;
+  --accent-surface: #243440;
+  --border-accent: #3A5261;
+  --border-subtle: #2C3A45;
+  --muscle-neutral-fill: #27343E;
+  --muscle-neutral-stroke: #536977;
+  --completed-surface: #25352F;
+  --completed-surface-hover: #2A3B34;
+  --completed-border: #5D8E6D;
+}
+
+html[data-theme='dark'],
+html[data-theme='dark'] body {
+  background-color: #10171E;
+  color: var(--text-primary);
+}
+
+html[data-theme='dark'] body {
+  background: linear-gradient(180deg, #151C23 0%, #121A21 55%, #10171E 100%);
+}
+
+html[data-theme='dark'] #app {
+  background: #151C23;
+  border-color: #2C3A45;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme='dark'] .daily-app-shell,
+html[data-theme='dark'] .daily-content-stage {
+  background: var(--stage-surface);
+}
+
+html[data-theme='dark'] .app-top-header {
+  background: rgba(24, 33, 41, 0.96);
+  border-color: #34434E;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+html[data-theme='dark'] .brand-name,
+html[data-theme='dark'] .day-month,
+html[data-theme='dark'] .hero-title,
+html[data-theme='dark'] .telemetry-val,
+html[data-theme='dark'] .exercise-name,
+html[data-theme='dark'] .equipment-meta-strip strong,
+html[data-theme='dark'] .instruction-text,
+html[data-theme='dark'] .focus-text,
+html[data-theme='dark'] .alt-name,
+html[data-theme='dark'] .preview-name,
+html[data-theme='dark'] .modal-title,
+html[data-theme='dark'] .photo-heading {
+  color: #E7EDF2;
+}
+
+html[data-theme='dark'] .brand-icon-pod,
+html[data-theme='dark'] .mode-badge,
+html[data-theme='dark'] .network-status-pill,
+html[data-theme='dark'] .theme-toggle,
+html[data-theme='dark'] .program-sequence-badge,
+html[data-theme='dark'] .emphasis-strip,
+html[data-theme='dark'] .count-pill,
+html[data-theme='dark'] .order-num,
+html[data-theme='dark'] .sets-reps-pill,
+html[data-theme='dark'] .cue-bullet,
+html[data-theme='dark'] .focus-callout,
+html[data-theme='dark'] .instruction-box,
+html[data-theme='dark'] .alt-count,
+html[data-theme='dark'] .chip-primary,
+html[data-theme='dark'] .chip-secondary,
+html[data-theme='dark'] .reassurance-note,
+html[data-theme='dark'] .icon-circle {
+  background: #243440;
+  border-color: #3A5261;
+  color: #B2D7E6;
+}
+
+html[data-theme='dark'] .network-status-pill.offline {
+  background: #382B2D;
+  border-color: #68484A;
+  color: #E7B8B8;
+}
+
+html[data-theme='dark'] .network-status-pill.offline .status-dot {
+  background: #D78E8E;
+}
+
+html[data-theme='dark'] .theme-toggle:hover,
+html[data-theme='dark'] .exercise-summary-button:hover,
+html[data-theme='dark'] .alt-toggle-bar:hover,
+html[data-theme='dark'] .alt-toggle-bar.open,
+html[data-theme='dark'] .dismiss-btn:hover,
+html[data-theme='dark'] .btn-cancel:hover {
+  background: #2B3A45;
+}
+
+html[data-theme='dark'] .workout-hero-editorial,
+html[data-theme='dark'] .exercise-card,
+html[data-theme='dark'] .exercise-card.card-open,
+html[data-theme='dark'] .card-header-bar,
+html[data-theme='dark'] .exercise-photo-card,
+html[data-theme='dark'] .muscle-map-widget,
+html[data-theme='dark'] .alternatives-block,
+html[data-theme='dark'] .alt-item-card,
+html[data-theme='dark'] .equipment-meta-strip,
+html[data-theme='dark'] .pwa-banner,
+html[data-theme='dark'] .modal-card,
+html[data-theme='dark'] .modal-close-btn,
+html[data-theme='dark'] .finish-day-toast {
+  background: #1B252E;
+  border-color: #34434E;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+html[data-theme='dark'] .card-accordion-body,
+html[data-theme='dark'] .telemetry-pill,
+html[data-theme='dark'] .alt-cards-feed,
+html[data-theme='dark'] .transition-preview-box,
+html[data-theme='dark'] .photo-step {
+  background: #172129;
+  border-color: #2C3A45;
+}
+
+html[data-theme='dark'] .exercise-card:hover {
+  border-color: #4B6878;
+}
+
+html[data-theme='dark'] .exercise-card.card-open,
+html[data-theme='dark'] .card-open .toggle-icon {
+  border-color: #62899F;
+  color: #A7D1E4;
+}
+
+html[data-theme='dark'] .exercise-card.card-completed {
+  border-color: #426A58;
+}
+
+html[data-theme='dark'] .card-header-bar,
+html[data-theme='dark'] .hero-top-strip,
+html[data-theme='dark'] .muscle-groups-footer,
+html[data-theme='dark'] .map-header,
+html[data-theme='dark'] .alt-cards-feed,
+html[data-theme='dark'] .section-title-strip,
+html[data-theme='dark'] .app-footer,
+html[data-theme='dark'] .photo-step,
+html[data-theme='dark'] .equipment-meta-strip {
+  border-color: #34434E;
+}
+
+html[data-theme='dark'] .editorial-meta,
+html[data-theme='dark'] .plate-cycle,
+html[data-theme='dark'] .telemetry-label,
+html[data-theme='dark'] .muscle-label,
+html[data-theme='dark'] .section-user-hint,
+html[data-theme='dark'] .footer-note,
+html[data-theme='dark'] .weekday,
+html[data-theme='dark'] .muscles-snippet,
+html[data-theme='dark'] .completion-toggle,
+html[data-theme='dark'] .toggle-icon,
+html[data-theme='dark'] .map-legend,
+html[data-theme='dark'] .view-tag,
+html[data-theme='dark'] .section-title,
+html[data-theme='dark'] .mistake-item,
+html[data-theme='dark'] .alt-intro-note,
+html[data-theme='dark'] .modal-subtitle,
+html[data-theme='dark'] .preview-tag,
+html[data-theme='dark'] .finish-day-hint,
+html[data-theme='dark'] .photo-heading span {
+  color: #A6B4BE;
+}
+
+html[data-theme='dark'] .emphasis-text,
+html[data-theme='dark'] .cue-item,
+html[data-theme='dark'] .alt-reason,
+html[data-theme='dark'] .modal-close-btn,
+html[data-theme='dark'] .alt-toggle-bar {
+  color: #CCD5DC;
+}
+
+html[data-theme='dark'] .exercise-name:hover,
+html[data-theme='dark'] .alt-name {
+  color: #E7EDF2;
+}
+
+html[data-theme='dark'] .order-num,
+html[data-theme='dark'] .sets-reps-pill,
+html[data-theme='dark'] .alt-equip-badge,
+html[data-theme='dark'] .step-label,
+html[data-theme='dark'] .current-num,
+html[data-theme='dark'] .total-num,
+html[data-theme='dark'] .muscle-tags,
+html[data-theme='dark'] .footer-brand {
+  color: #A7D1E4;
+}
+
+html[data-theme='dark'] .completion-checkbox {
+  background: #1B252E;
+  border-color: #60717D;
+}
+
+html[data-theme='dark'] .alt-equip-badge,
+html[data-theme='dark'] .alt-count {
+  background: #243440;
+  border-color: #3A5261;
+}
+
+html[data-theme='dark'] .instruction-box,
+html[data-theme='dark'] .focus-callout,
+html[data-theme='dark'] .reassurance-note {
+  background: #202F39;
+  border-color: #3A5261;
+}
+
+html[data-theme='dark'] .modal-backdrop {
+  background: rgba(5, 9, 12, 0.76);
+}
+
+html[data-theme='dark'] .btn-cancel {
+  border-color: #465966;
+  color: #B6C2CB;
+}
+
+html[data-theme='dark'] .body-svg circle,
+html[data-theme='dark'] .body-svg > path:not(.muscle-path) {
+  fill: var(--muscle-neutral-fill);
+  stroke: var(--muscle-neutral-stroke);
+}
+
+html[data-theme='dark'] .muscle-map-widget .chip-primary,
+html[data-theme='dark'] .muscle-map-widget .chip-secondary {
+  color: #C7D9E3;
+}
+
+html[data-theme='dark'] .finish-day-button,
+html[data-theme='dark'] .btn-confirm,
+html[data-theme='dark'] .install-btn {
+  background: linear-gradient(135deg, #4F8EAA 0%, #38677F 100%);
+  color: #F1F7FA;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme='dark'] .finish-day-button:hover:not(:disabled),
+html[data-theme='dark'] .btn-confirm:hover,
+html[data-theme='dark'] .install-btn:hover {
+  background: linear-gradient(135deg, #5C9CB8 0%, #43758D 100%);
+}
+
+html[data-theme='dark'] .alt-toggle-bar:hover,
+html[data-theme='dark'] .alt-toggle-bar.open {
+  color: #A7D1E4;
+}
+
+html[data-theme='dark'] .pwa-banner .banner-title {
+  color: #E7EDF2;
+}
+
+html[data-theme='dark'] .pwa-banner .banner-sub {
+  color: #A6B4BE;
+}
+
+html[data-theme='dark'] .dismiss-btn {
+  color: #A6B4BE;
+}
+
+html[data-theme='dark'] .modal-eyebrow,
+html[data-theme='dark'] .preview-tag.next-tag,
+html[data-theme='dark'] .tip-badge,
+html[data-theme='dark'] .focus-label {
+  color: #A7D1E4;
+}
+
+html[data-theme='dark'] .modal-num {
+  color: #CCD5DC;
+}
+
+html[data-theme='dark'] .modal-close-btn:hover {
+  background: #2B3A45;
+  color: #E7EDF2;
+}
+
+html[data-theme='dark'] input,
+html[data-theme='dark'] button,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea {
+  color-scheme: dark;
+}
+
+html[data-theme='dark'] .exercise-card.card-completed,
+html[data-theme='dark'] .exercise-card.card-completed.card-open,
+html[data-theme='dark'] .card-completed .card-header-bar,
+html[data-theme='dark'] .card-completed .card-accordion-body {
+  background: var(--completed-surface);
+  border-color: var(--completed-border);
+}
+
+html[data-theme='dark'] .card-completed .card-accordion-body {
+  background: #202F29;
+}
+
+html[data-theme='dark'] .card-completed .exercise-name,
+html[data-theme='dark'] .card-completed .completion-label,
+html[data-theme='dark'] .card-completed .completion-toggle.is-checked {
+  color: #C5E5CC;
+}
+
+html[data-theme='dark'] .completion-toggle.is-checked .completion-checkbox {
+  background: #447B54;
+  border-color: #7AB588;
+  color: #F0FAF2;
+  box-shadow: 0 0 0 3px rgba(122, 181, 136, 0.18);
 }

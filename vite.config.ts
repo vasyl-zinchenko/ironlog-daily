@@ -33,8 +33,8 @@ export default defineConfig({
         start_url: './',
         scope: './',
         display: 'standalone',
-        background_color: '#FFFFFF',
-        theme_color: '#FFFFFF',
+        background_color: '#151C23',
+        theme_color: '#10171E',
         orientation: 'portrait',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
@@ -44,7 +44,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: 'index.html',
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,json,jpg,jpeg,webp}'],
         cleanupOutdatedCaches: true,
       },
     }),

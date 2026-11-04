@@ -239,7 +239,6 @@ export const WORKOUT_PROGRAMS: WorkoutProgram[] = [
       { ...EXERCISE_LIBRARY.kettlebell_swings, sets: 3, reps: '15' },
       { ...EXERCISE_LIBRARY.hammer_curls, sets: 2, reps: '12–15' },
     ],
-    cycleVariationNotice: 'Вітаємо з проходженням повного циклу! Завтра цикл автоматично почнеться з Програми 01.',
+    cycleVariationNotice: 'Вітаємо з проходженням повного циклу! Після завершення цього дня цикл почнеться з Програми 01.',
   },
 ];
-

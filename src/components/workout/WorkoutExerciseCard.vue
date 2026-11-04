@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ChevronDown, ChevronUp, Dumbbell } from 'lucide-vue-next';
+import { Check, ChevronDown, ChevronUp, Dumbbell } from 'lucide-vue-next';
 import type { Exercise } from '../../types/exercise';
-import ExerciseIllustration from './ExerciseIllustration.vue';
+import ExercisePhotos from './ExercisePhotos.vue';
 import MuscleMap from './MuscleMap.vue';
 import ExerciseDetails from './ExerciseDetails.vue';
 import AlternativeExercises from './AlternativeExercises.vue';
@@ -10,6 +10,11 @@ import AlternativeExercises from './AlternativeExercises.vue';
 defineProps<{
   exercise: Exercise;
   orderIndex: number;
+  isCompleted: boolean;
+}>();
+
+const emit = defineEmits<{
+  (event: 'toggle-complete'): void;
 }>();
 
 const isExpanded = ref(false);
@@ -22,45 +27,60 @@ function toggleExpand() {
 <template>
   <article
     class="exercise-card"
-    :class="{ 'card-open': isExpanded }"
+    :class="{ 'card-open': isExpanded, 'card-completed': isCompleted }"
   >
-    <!-- Collapsed Header Row (Tap to expand/collapse) -->
-    <header
-      class="card-header-bar"
-      tabindex="0"
-      role="button"
-      :aria-expanded="isExpanded"
-      @click="toggleExpand"
-      @keydown.enter.space.prevent="toggleExpand"
-    >
-      <div class="header-left">
-        <span class="order-num">{{ String(orderIndex).padStart(2, '0') }}</span>
-        <div class="title-meta-wrap">
-          <h4 class="exercise-name">{{ exercise.name }}</h4>
-          <span class="muscles-snippet">{{ exercise.targetMusclesText }}</span>
+    <header class="card-header-bar">
+      <button
+        type="button"
+        class="exercise-summary-button"
+        :aria-expanded="isExpanded"
+        :aria-controls="`exercise-details-${exercise.id}`"
+        @click="toggleExpand"
+      >
+        <div class="header-left">
+          <span class="order-num">{{ String(orderIndex).padStart(2, '0') }}</span>
+          <div class="title-meta-wrap">
+            <span class="exercise-name">{{ exercise.name }}</span>
+            <span class="muscles-snippet">{{ exercise.targetMusclesText }}</span>
+          </div>
         </div>
-      </div>
 
-      <div class="header-right">
-        <div class="sets-reps-pill">
-          <span class="sets-count">{{ exercise.sets }}</span>
-          <span class="times-symb">×</span>
-          <span class="reps-range">{{ exercise.reps }}</span>
-        </div>
-        <component :is="isExpanded ? ChevronUp : ChevronDown" :size="18" class="toggle-icon" />
-      </div>
+        <span class="header-right">
+          <span class="sets-reps-pill">
+            <span class="sets-count">{{ exercise.sets }}</span>
+            <span class="times-symb">×</span>
+            <span class="reps-range">{{ exercise.reps }}</span>
+          </span>
+          <component :is="isExpanded ? ChevronUp : ChevronDown" :size="18" class="toggle-icon" />
+        </span>
+      </button>
+
+      <label class="completion-toggle" :class="{ 'is-checked': isCompleted }">
+        <input
+          type="checkbox"
+          :checked="isCompleted"
+          :aria-label="`Позначити вправу «${exercise.name}» як виконану`"
+          @change="emit('toggle-complete')"
+        />
+        <span class="completion-checkbox" aria-hidden="true">
+          <Check :size="15" :stroke-width="3" />
+        </span>
+        <span class="completion-label">{{ isCompleted ? 'Виконано' : 'Виконати' }}</span>
+      </label>
     </header>
 
-    <!-- EXPANDED DETAILED ACCORDION BODY -->
-    <div v-if="isExpanded" class="card-accordion-body">
+    <div
+      v-if="isExpanded"
+      :id="`exercise-details-${exercise.id}`"
+      class="card-accordion-body"
+    >
       <!-- Equipment Bar -->
       <div class="equipment-meta-strip">
         <Dumbbell :size="14" class="strip-icon" />
         <span>Необхідний інвентар: <strong>{{ exercise.equipment }}</strong></span>
       </div>
 
-      <!-- 1. Movement Schematic Illustration -->
-      <ExerciseIllustration
+      <ExercisePhotos
         :illustration-id="exercise.illustrationId"
         :name="exercise.name"
       />
@@ -102,20 +122,62 @@ function toggleExpand() {
   box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
 }
 
+.exercise-card.card-completed {
+  background: var(--completed-surface);
+  border-color: var(--completed-border);
+  box-shadow: inset 4px 0 0 #5D9A6B, 0 4px 14px rgba(41, 98, 54, 0.1);
+}
+
+.card-completed .card-header-bar {
+  background: var(--completed-surface);
+}
+
+.card-completed .card-accordion-body {
+  background: var(--completed-surface-hover);
+}
+
+.card-completed .exercise-name {
+  color: #28643A;
+}
+
 .card-header-bar {
-  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 10px 16px;
+  background: #FFFFFF;
+}
+
+.exercise-summary-button {
+  min-width: 0;
+  flex: 1;
+  padding: 4px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  border: 0;
+  background: transparent;
   cursor: pointer;
   user-select: none;
-  background: #FFFFFF;
-  transition: background 0.15s ease;
+  text-align: left;
+  font: inherit;
 }
 
-.card-header-bar:hover {
+.exercise-summary-button:hover {
+  border-radius: 8px;
   background: #F8FBFE;
+}
+
+.exercise-summary-button:hover .exercise-name {
+  color: #0284C7;
+}
+
+.exercise-summary-button:focus-visible,
+.completion-toggle:focus-within {
+  outline: 2px solid #0284C7;
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 .header-left {
@@ -167,6 +229,12 @@ function toggleExpand() {
   flex-shrink: 0;
 }
 
+.header-right,
+.sets-reps-pill {
+  display: inline-flex;
+  align-items: center;
+}
+
 .sets-reps-pill {
   background: #F0F7FD;
   border: 1px solid #BAE6FD;
@@ -178,6 +246,52 @@ function toggleExpand() {
   font-size: 0.85rem;
   font-weight: 800;
   color: #0369A1;
+}
+
+.completion-toggle {
+  position: relative;
+  flex-shrink: 0;
+  min-width: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: #64748B;
+  cursor: pointer;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.completion-toggle input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.completion-checkbox {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #94A3B8;
+  border-radius: 7px;
+  background: #FFFFFF;
+  color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.completion-toggle.is-checked {
+  color: #15803D;
+}
+
+.completion-toggle.is-checked .completion-checkbox {
+  border-color: #287A3C;
+  background: #287A3C;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(40, 122, 60, 0.16);
 }
 
 .times-symb {
@@ -227,5 +341,36 @@ function toggleExpand() {
 
 .equipment-meta-strip strong {
   color: #0F172A;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exercise-card,
+  .completion-checkbox {
+    transition: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .card-header-bar {
+    gap: 5px;
+    padding-left: 12px;
+    padding-right: 8px;
+  }
+
+  .header-right {
+    gap: 5px;
+  }
+
+  .sets-reps-pill {
+    padding: 4px 6px;
+  }
+
+  .completion-toggle {
+    min-width: 48px;
+  }
+
+  .completion-label {
+    font-size: 0.58rem;
+  }
 }
 </style>

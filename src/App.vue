@@ -4,9 +4,10 @@ import AppHeader from './components/layout/AppHeader.vue';
 import PwaInstallBanner from './components/common/PwaInstallBanner.vue';
 import WorkoutHero from './components/workout/WorkoutHero.vue';
 import WorkoutExerciseCard from './components/workout/WorkoutExerciseCard.vue';
-import UpdateProgramButton from './components/common/UpdateProgramButton.vue';
-import UpdateConfirmationModal from './components/workout/UpdateConfirmationModal.vue';
+import FinishDayButton from './components/common/FinishDayButton.vue';
+import FinishDayConfirmationModal from './components/workout/FinishDayConfirmationModal.vue';
 import { useDailyProgram } from './composables/useDailyProgram';
+import { useExerciseProgress } from './composables/useExerciseProgress';
 
 const {
   currentProgram,
@@ -16,50 +17,47 @@ const {
   todayDateInfo,
   notificationMessage,
   isTransitioning,
-  manualAdvance,
-  manualRewind,
+  finishDay,
 } = useDailyProgram();
+
+const {
+  completedExerciseIds,
+  toggleExercise,
+  clearProgress,
+} = useExerciseProgress(computed(() => currentProgram.value.id));
 
 const isConfirmModalOpen = ref(false);
 
+const completedExerciseCount = computed(() => completedExerciseIds.value.length);
 const formattedNextProgramNumber = computed(() => {
   return String(nextProgram.value.cycleNumber).padStart(2, '0');
 });
 
-function openUpdateModal() {
+function openFinishDayModal() {
   isConfirmModalOpen.value = true;
 }
 
-function closeUpdateModal() {
+function closeFinishDayModal() {
   isConfirmModalOpen.value = false;
 }
 
-function handleConfirmUpdate() {
+function handleConfirmFinishDay() {
   isConfirmModalOpen.value = false;
-  manualAdvance();
-}
-
-function handleRewind() {
-  manualRewind();
+  clearProgress();
+  finishDay();
 }
 </script>
 
 <template>
   <div class="daily-app-shell">
-    <!-- 1. Top Header Bar with Update & Rewind Icons -->
-    <AppHeader
-      :today-date-info="todayDateInfo"
-      :is-updating="isTransitioning"
-      @request-update="openUpdateModal"
-      @request-rewind="handleRewind"
-    />
+    <AppHeader :today-date-info="todayDateInfo" />
 
     <!-- Main Scrollable Workout Stage -->
     <main class="daily-content-stage">
       <!-- PWA Install Banner -->
       <PwaInstallBanner />
 
-      <!-- Smooth Transition Wrapper for Daily Program -->
+      <!-- Smooth transition between workout programs -->
       <transition name="fade" mode="out-in">
         <div :key="currentProgram.id" class="program-view-wrapper" :class="{ 'is-swapping': isTransitioning }">
           <!-- 2. Master Workout Editorial Hero Card -->
@@ -76,30 +74,34 @@ function handleRewind() {
                 <span class="section-pre-tag">ПЛАН ВПРАВ</span>
                 <h3 class="section-heading">Вправи тренування</h3>
               </div>
-              <span class="count-pill">{{ currentProgram.exercises.length }} вправ</span>
+              <span class="count-pill">
+                {{ completedExerciseCount }} / {{ currentProgram.exercises.length }} виконано
+              </span>
             </div>
 
             <p class="section-user-hint">
-              Натисніть на будь-яку вправу, щоб переглянути схему руху, карту м’язів, правила техніки та альтернативи.
+              Позначайте виконані вправи галочками. Натисніть назву вправи, щоб побачити фото руху та підказки.
             </p>
 
-            <!-- 4. Interactive Expandable Exercise Cards Feed -->
+            <!-- Expandable exercise cards with saved completion status -->
             <div class="exercise-cards-list">
               <WorkoutExerciseCard
                 v-for="(exercise, idx) in currentProgram.exercises"
                 :key="exercise.id"
                 :exercise="exercise"
                 :order-index="idx + 1"
+                :is-completed="completedExerciseIds.includes(exercise.id)"
+                @toggle-complete="toggleExercise(exercise.id)"
               />
             </div>
           </section>
 
-          <!-- 5. Dual Action Controls: Rewind & Update Program -->
-          <UpdateProgramButton
+          <FinishDayButton
             :is-updating="isTransitioning"
             :notification-message="notificationMessage"
-            @update="openUpdateModal"
-            @rewind="handleRewind"
+            :completed-count="completedExerciseCount"
+            :total-count="currentProgram.exercises.length"
+            @finish="openFinishDayModal"
           />
         </div>
       </transition>
@@ -109,20 +111,19 @@ function handleRewind() {
         <div class="footer-plate">
           <span class="footer-brand">IRONLOG DAILY</span>
           <span class="footer-dot">•</span>
-          <span class="footer-note">100% Автономний PWA • Щоденні програми</span>
+          <span class="footer-note">100% Автономний PWA • Цикл змінюється після завершення дня</span>
         </div>
       </footer>
     </main>
 
-    <!-- Confirmation Modal to Prevent Accidental Program Advancement -->
-    <UpdateConfirmationModal
+    <FinishDayConfirmationModal
       :is-open="isConfirmModalOpen"
       :current-program="currentProgram"
       :next-program="nextProgram"
       :current-number-formatted="formattedProgramNumber"
       :next-number-formatted="formattedNextProgramNumber"
-      @confirm="handleConfirmUpdate"
-      @cancel="closeUpdateModal"
+      @confirm="handleConfirmFinishDay"
+      @cancel="closeFinishDayModal"
     />
   </div>
 </template>
@@ -132,7 +133,7 @@ function handleRewind() {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #FFFFFF;
+  background: var(--app-surface);
 }
 
 .daily-content-stage {
@@ -140,7 +141,7 @@ function handleRewind() {
   padding: 16px 16px 40px;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5F9FE 30%, #ECF5FC 100%);
+  background: var(--stage-surface);
 }
 
 .program-view-wrapper {
@@ -163,7 +164,7 @@ function handleRewind() {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  border-bottom: 1px solid #BAE6FD;
+  border-bottom: 1px solid var(--border-accent);
   padding-bottom: 8px;
 }
 
@@ -177,7 +178,7 @@ function handleRewind() {
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: #0284C7;
+  color: var(--accent);
   text-transform: uppercase;
 }
 
@@ -185,7 +186,7 @@ function handleRewind() {
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--text-strong);
   letter-spacing: -0.01em;
   text-transform: uppercase;
 }
@@ -193,9 +194,9 @@ function handleRewind() {
 .count-pill {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #0369A1;
-  background: #E0F2FE;
-  border: 1px solid #BAE6FD;
+  color: var(--accent-text);
+  background: var(--accent-surface);
+  border: 1px solid var(--border-accent);
   padding: 3px 9px;
   border-radius: 999px;
 }
@@ -203,7 +204,7 @@ function handleRewind() {
 .section-user-hint {
   margin: 2px 0 8px;
   font-size: 0.78rem;
-  color: #475569;
+  color: var(--text-muted);
   line-height: 1.4;
 }
 
@@ -216,7 +217,7 @@ function handleRewind() {
 .app-footer {
   margin-top: 36px;
   padding-top: 16px;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--border-subtle);
   text-align: center;
 }
 
@@ -225,23 +226,23 @@ function handleRewind() {
   align-items: center;
   gap: 8px;
   font-size: 0.72rem;
-  color: #64748B;
+  color: var(--text-muted);
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .footer-brand {
   font-weight: 800;
-  color: #0369A1;
+  color: var(--accent-text);
   letter-spacing: 0.06em;
 }
 
 .footer-dot {
-  color: #38BDF8;
+  color: var(--accent-soft);
 }
 
 .footer-note {
-  color: #64748B;
+  color: var(--text-muted);
 }
 
 @media (max-width: 440px) {

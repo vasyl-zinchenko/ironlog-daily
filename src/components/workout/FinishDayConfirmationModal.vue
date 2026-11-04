@@ -58,16 +58,16 @@ onUnmounted(() => {
             <div class="icon-circle">
               <RotateCw :size="24" class="rotate-icon" />
             </div>
-            <span class="modal-eyebrow">ПІДТВЕРДЖЕННЯ ОНОВЛЕННЯ</span>
+            <span class="modal-eyebrow">ЗАВЕРШЕННЯ ТРЕНУВАННЯ</span>
           </div>
 
           <!-- Title -->
           <h3 id="modal-confirm-title" class="modal-title">
-            Оновити програму тренування?
+            Завершити цей день тренування?
           </h3>
 
           <p class="modal-subtitle">
-            Ви перейдете до наступного дня в 12-денному циклі тренувань.
+            Ви перейдете до наступної програми. Позначки вправ цього тренування буде скинуто.
           </p>
 
           <!-- Sequence Preview Strip -->
@@ -95,7 +95,7 @@ onUnmounted(() => {
           <div class="reassurance-note">
             <CheckCircle2 :size="16" class="check-icon" />
             <span>
-              Випадково оновили? Ви завжди зможете повернутися назад кнопкою <strong>«Попередній день»</strong>.
+              Програма не змінюється автоматично з настанням нового дня — лише після вашого підтвердження.
             </span>
           </div>
 
@@ -107,7 +107,7 @@ onUnmounted(() => {
               @click="emit('confirm')"
             >
               <RotateCw :size="16" />
-              <span>Так, перейти до наступного</span>
+              <span>Так, завершити день</span>
             </button>
 
             <button

@@ -1,11 +1,33 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { createApp, h } from 'vue';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   getCalendarDaysDiff,
   getLocalTodayDateString,
   parseLocalDate,
   formatUkrainianDate,
 } from './useLocalDate';
-import { WORKOUT_PROGRAMS } from '../data/workoutPrograms';
+import { useDailyProgram } from './useDailyProgram';
+
+function mountDailyProgram() {
+  let program: ReturnType<typeof useDailyProgram>;
+  const host = document.createElement('div');
+  const app = createApp({
+    setup() {
+      program = useDailyProgram();
+      return () => h('div');
+    },
+  });
+
+  app.mount(host);
+
+  return {
+    program: program!,
+    unmount() {
+      app.unmount();
+      host.remove();
+    },
+  };
+}
 
 describe('useLocalDate and Calendar Days Calculation', () => {
   it('correctly formats local date YYYY-MM-DD avoiding UTC day shift', () => {
@@ -46,92 +68,43 @@ describe('useLocalDate and Calendar Days Calculation', () => {
 });
 
 describe('Daily Program Cycling and Advancement Logic', () => {
-  const TOTAL = WORKOUT_PROGRAMS.length; // 12
-
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('advances 1 program per calendar day', () => {
-    let currentIndex = 0;
-    const lastDate = '2026-11-02';
-    const nextDay = '2026-11-03';
-
-    const diffDays = getCalendarDaysDiff(lastDate, nextDay);
-    expect(diffDays).toBe(1);
-
-    currentIndex = (currentIndex + diffDays) % TOTAL;
-    expect(currentIndex).toBe(1); // Program 02
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('does NOT advance when reloaded on the same day', () => {
-    let currentIndex = 3;
-    const lastDate = '2026-11-02';
-    const sameDay = '2026-11-02';
+  it('keeps the same program after the date changes and the app regains focus', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 2));
+    localStorage.setItem('ironlog_daily_program_index', '3');
 
-    const diffDays = getCalendarDaysDiff(lastDate, sameDay);
-    expect(diffDays).toBe(0);
+    const mounted = mountDailyProgram();
+    expect(mounted.program.currentIndex.value).toBe(3);
 
-    if (diffDays > 0) {
-      currentIndex = (currentIndex + diffDays) % TOTAL;
-    }
-    expect(currentIndex).toBe(3); // Unchanged
+    vi.setSystemTime(new Date(2026, 10, 5));
+    window.dispatchEvent(new Event('focus'));
+    document.dispatchEvent(new Event('visibilitychange'));
+
+    expect(mounted.program.currentIndex.value).toBe(3);
+    expect(localStorage.getItem('ironlog_daily_program_index')).toBe('3');
+    mounted.unmount();
   });
 
-  it('advances properly when 3 calendar days have passed', () => {
-    let currentIndex = 2; // Program 03
-    const lastDate = '2026-11-02';
-    const after3Days = '2026-11-05';
+  it('advances and persists the program only when the user finishes the day', () => {
+    localStorage.setItem('ironlog_daily_program_index', '2');
+    const mounted = mountDailyProgram();
 
-    const diffDays = getCalendarDaysDiff(lastDate, after3Days);
-    expect(diffDays).toBe(3);
+    mounted.program.finishDay();
 
-    currentIndex = (currentIndex + diffDays) % TOTAL;
-    expect(currentIndex).toBe(5); // Program 06
-  });
+    expect(mounted.program.currentIndex.value).toBe(3);
+    expect(localStorage.getItem('ironlog_daily_program_index')).toBe('3');
+    mounted.unmount();
 
-  it('wraps around from Program 12 (index 11) back to Program 01 (index 0)', () => {
-    let currentIndex = 11; // Program 12
-    const diffDays = 1;
-
-    currentIndex = (currentIndex + diffDays) % TOTAL;
-    expect(currentIndex).toBe(0); // Program 01
-  });
-
-  it('manual update immediately advances program and prevents double advance same day', () => {
-    let currentIndex = 0; // Program 01
-    const today = '2026-11-02';
-
-    // 1. User clicks «Оновити програму» on 02.11
-    currentIndex = (currentIndex + 1) % TOTAL;
-    let lastDate = today;
-    expect(currentIndex).toBe(1); // Program 02
-    expect(lastDate).toBe('2026-11-02');
-
-    // 2. User reloads on the same day 02.11 -> diffDays is 0, no duplicate jump
-    const reloadDiff = getCalendarDaysDiff(lastDate, '2026-11-02');
-    expect(reloadDiff).toBe(0);
-    expect(currentIndex).toBe(1); // Still Program 02
-
-    // 3. Next day 03.11 arrives -> diffDays is 1, advances to Program 03
-    const nextDayDiff = getCalendarDaysDiff(lastDate, '2026-11-03');
-    expect(nextDayDiff).toBe(1);
-    currentIndex = (currentIndex + nextDayDiff) % TOTAL;
-    lastDate = '2026-11-03';
-    expect(currentIndex).toBe(2); // Program 03
-  });
-
-  it('rewinds properly to previous program when user updated accidentally', () => {
-    let currentIndex = 3; // Program 04
-    // User clicks previous day / undo
-    currentIndex = (currentIndex - 1 + TOTAL) % TOTAL;
-    expect(currentIndex).toBe(2); // Back to Program 03
-  });
-
-  it('rewinds and wraps around from Program 01 (index 0) back to Program 12 (index 11)', () => {
-    let currentIndex = 0; // Program 01
-    currentIndex = (currentIndex - 1 + TOTAL) % TOTAL;
-    expect(currentIndex).toBe(11); // Program 12
+    const reloaded = mountDailyProgram();
+    expect(reloaded.program.currentIndex.value).toBe(3);
+    reloaded.unmount();
   });
 });
-
